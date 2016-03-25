@@ -20,6 +20,11 @@
   </extensions>
 
   <actions>
+    <action id="GTMAction"
+            class="io.edgeg.gtm.intellij.GTMAction"
+            text="Git Time Metrics"
+            description="Tracks how much time you've spent on each commit">
+    </action>
   </actions>
 
 </idea-plugin>
