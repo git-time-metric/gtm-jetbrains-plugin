@@ -19,12 +19,14 @@
   <extensions defaultExtensionNs="com.intellij">
   </extensions>
 
+  <application-components>
+    <!-- Add your application components here -->
+    <component>
+      <implementation-class>io.edgeg.gtm.intellij.GitTimeMetric</implementation-class>
+    </component>
+  </application-components>
+
   <actions>
-    <action id="GTMAction"
-            class="io.edgeg.gtm.intellij.GTMAction"
-            text="Git Time Metrics"
-            description="Tracks how much time you've spent on each commit">
-    </action>
   </actions>
 
 </idea-plugin>
