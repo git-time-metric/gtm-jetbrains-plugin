@@ -26,6 +26,12 @@
     </component>
   </application-components>
 
+  <project-components>
+    <component>
+      <implementation-class>io.edgeg.gtm.intellij.GTMProject</implementation-class>
+    </component>
+  </project-components>
+
   <actions>
   </actions>
 

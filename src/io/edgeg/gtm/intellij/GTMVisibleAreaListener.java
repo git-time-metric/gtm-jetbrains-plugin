@@ -1,19 +1,21 @@
 package io.edgeg.gtm.intellij;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.event.VisibleAreaEvent;
 import com.intellij.openapi.editor.event.VisibleAreaListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import java.math.BigDecimal;
+class GTMVisibleAreaListener implements VisibleAreaListener {
+    private final Logger LOG = Logger.getInstance(getClass());
 
-public class GTMVisibleAreaListener implements VisibleAreaListener {
     @Override
     public void visibleAreaChanged(VisibleAreaEvent visibleAreaEvent) {
+//        LOG.info("visibleAreaChanged visibleAreaEvent");
         final FileDocumentManager instance = FileDocumentManager.getInstance();
         final VirtualFile file = instance.getFile(visibleAreaEvent.getEditor().getDocument());
         if (file != null) {
-            GTMRecord.record(file.getPath());
+            GTMRecord.record(file.getPath(), visibleAreaEvent.getEditor().getProject());
         }
     }
 }

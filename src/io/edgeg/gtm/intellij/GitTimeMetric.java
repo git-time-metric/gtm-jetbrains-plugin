@@ -1,49 +1,31 @@
 package io.edgeg.gtm.intellij;
 
-import com.intellij.AppTopics;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.util.messages.MessageBus;
-import com.intellij.util.messages.MessageBusConnection;
+import com.intellij.openapi.editor.event.EditorMouseListener;
+import com.intellij.openapi.editor.event.VisibleAreaEvent;
+import com.intellij.openapi.editor.event.VisibleAreaListener;
 import org.jetbrains.annotations.NotNull;
 
 public class GitTimeMetric implements ApplicationComponent {
 
-    public static MessageBusConnection connection;
+    private final Logger LOG = Logger.getInstance(getClass());
+
+    private EditorMouseListener mouseListener = new GTMEditorMouseListener();
+    private VisibleAreaListener visibleAreaListener = new GTMVisibleAreaListener();
 
     public GitTimeMetric() {
     }
 
     public void initComponent() {
-        setupEventListeners();
-    }
-
-    private void setupEventListeners() {
-        ApplicationManager.getApplication().invokeLater(new Runnable(){
-            public void run() {
-
-                // save file
-                MessageBus bus = ApplicationManager.getApplication().getMessageBus();
-                connection = bus.connect();
-                connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new GTMSaveListener());
-
-                // edit document
-                EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new GTMDocumentListener());
-
-                // mouse press
-                EditorFactory.getInstance().getEventMulticaster().addEditorMouseListener(new GTMEditorMouseListener());
-
-                // scroll document
-                EditorFactory.getInstance().getEventMulticaster().addVisibleAreaListener(new GTMVisibleAreaListener());
-            }
-        });
+        EditorFactory.getInstance().getEventMulticaster().addEditorMouseListener(mouseListener);
+        EditorFactory.getInstance().getEventMulticaster().addVisibleAreaListener(visibleAreaListener);
     }
 
     public void disposeComponent() {
-        try {
-            connection.disconnect();
-        } catch(Exception e) { }
+        EditorFactory.getInstance().getEventMulticaster().removeEditorMouseListener(mouseListener);
+        EditorFactory.getInstance().getEventMulticaster().removeVisibleAreaListener(visibleAreaListener);
     }
 
     @NotNull
