@@ -20,7 +20,7 @@ class GTMRecord {
     private static final String GTM_VER_REQ = ">= 1.0-beta.6";
 
     private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
-    private static final String GTM_EXE_NAME = "gtm";
+    private static final String GTM_EXE_NAME = System.getProperty("os.name").startsWith("Windows") ? "gtm.exe" : "gtm";
     private static final String RECORD_COMMAND = "record";
     private static final String STATUS_OPTION = "--status";
     private static final String VERIFY_COMMAND = "verify";
@@ -86,7 +86,7 @@ class GTMRecord {
         for (String pathDir : pathDirs) {
             Path toExe = Paths.get(pathDir, GTM_EXE_NAME);
             File exeFile = toExe.toFile();
-            if (exeFile.exists() && exeFile.canExecute()) {
+            if (exeFile.getAbsoluteFile().exists() && exeFile.getAbsoluteFile().canExecute()) {
                 result = exeFile.getAbsolutePath();
                 break;
             }
