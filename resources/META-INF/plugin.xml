@@ -28,6 +28,8 @@ Consult the <a href=https://github.com/git-time-metric/gtm/blob/master/README.md
     ]]>
   </change-notes>
 
+  <idea-version since-build="139"/>
+
   <depends>com.intellij.modules.lang</depends>
 
   <application-components>
