@@ -95,18 +95,8 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
     @Nullable
     @Override
     public String getTooltipText() {
-        if (!GTMRecord.gtmExeFound) {
-            return "<B>Git Time Metric (GTM) executable not found.</B>\n" +
-                   "Install GTM and/or update your system path.\n" +
-                   "Make sure to restart after installing GTM.\n\n" +
-                   "See https://github.com/git-time-metric/gtm";
-        }
-        if (!GTMRecord.gtmVersionOK) {
-            return "<B>Git Time Metric (GTM) executable is out of date.</B>\n" +
-                   "The plug-in may not work properly.\n" +
-                   "Please install the latest GTM version and restart.\n\n" +
-                   "See https://github.com/git-time-metric/gtm";
-        }
+        if (!GTMRecord.gtmExeFound) { return GTMConfig.getInstance().gtmNotFound; }
+        if (!GTMRecord.gtmVersionOK) { return GTMConfig.getInstance().gtmVerOutdated; }
         return "<B>Git Time Metric (GTM)</B>";
     }
 

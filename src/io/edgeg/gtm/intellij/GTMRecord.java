@@ -1,6 +1,5 @@
 package io.edgeg.gtm.intellij;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
@@ -15,12 +14,9 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 class GTMRecord {
-    private static final Logger LOG = Logger.getInstance(GTMRecord.class);
-
     private static final String GTM_VER_REQ = ">= 1.0-beta.6";
 
     private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
-    private static final String GTM_EXE_NAME = System.getProperty("os.name").startsWith("Windows") ? "gtm.exe" : "gtm";
     private static final String RECORD_COMMAND = "record";
     private static final String STATUS_OPTION = "--status";
     private static final String VERIFY_COMMAND = "verify";
@@ -49,6 +45,12 @@ class GTMRecord {
                 lastRecordPath = path;
                 lastRecordTime = currentTime;
                 if (cfg.statusEnabled) {
+
+//                    GTMConfig.LOG.info(
+//                            String.format(
+//                                    "Executing %s %s %s %s",
+//                                    gtmExePath, RECORD_COMMAND, STATUS_OPTION, path));
+
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, STATUS_OPTION, path).start();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     StringBuilder builder = new StringBuilder();
@@ -58,6 +60,12 @@ class GTMRecord {
                     }
                     status = builder.toString();
                 } else {
+
+//                    GTMConfig.LOG.info(
+//                            String.format(
+//                                    "Executing %s %s %s",
+//                                    gtmExePath, RECORD_COMMAND, path));
+
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, path).start();
                     status = "";
                 }
@@ -67,8 +75,8 @@ class GTMRecord {
                 if (initGtmExePath()) {
                     checkVersion();
                 }
-                LOG.warn(String.format(
-                        "Error executing %s %s with parameter %s", gtmExePath, RECORD_COMMAND, path), e);
+                GTMConfig.LOG.warn(String.format(
+                        "Error executing %s %s %s", gtmExePath, RECORD_COMMAND, path), e);
             }
         }
         if (project != null) {
@@ -80,11 +88,12 @@ class GTMRecord {
     }
 
     public static Boolean initGtmExePath() {
+        String gtmExeName = System.getProperty("os.name").startsWith("Windows") ? "gtm.exe" : "gtm";
         String result = null;
         String pathVar = System.getenv("PATH");
         String[] pathDirs = pathVar.split(File.pathSeparator);
         for (String pathDir : pathDirs) {
-            Path toExe = Paths.get(pathDir, GTM_EXE_NAME);
+            Path toExe = Paths.get(pathDir, gtmExeName);
             File exeFile = toExe.toFile();
             if (exeFile.getAbsoluteFile().exists() && exeFile.getAbsoluteFile().canExecute()) {
                 result = exeFile.getAbsolutePath();
@@ -94,7 +103,7 @@ class GTMRecord {
         gtmExeFound = (result != null);
         gtmExePath = result;
         if (!gtmExeFound) {
-            LOG.warn("Unable to find executable gtm in PATH");
+            GTMConfig.LOG.warn("Unable to find executable gtm in PATH");
         }
         return gtmExeFound;
     }
@@ -110,8 +119,8 @@ class GTMRecord {
             }
             gtmVersionOK = (Objects.equals(builder.toString(), "true"));
         } catch (IOException e) {
-            LOG.warn(String.format(
-                    "Error executing %s %s with parameter %s", gtmExePath, VERIFY_COMMAND, GTM_VER_REQ), e);
+            GTMConfig.LOG.warn(String.format(
+                    "Error executing %s %s %s", gtmExePath, VERIFY_COMMAND, GTM_VER_REQ), e);
             gtmVersionOK = false;
         }
         return gtmVersionOK;

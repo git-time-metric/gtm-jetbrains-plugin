@@ -9,9 +9,6 @@ import com.intellij.openapi.editor.event.VisibleAreaListener;
 import org.jetbrains.annotations.NotNull;
 
 public class GitTimeMetric implements ApplicationComponent {
-
-    private final Logger LOG = Logger.getInstance(getClass());
-
     private EditorMouseListener mouseListener = new GTMEditorMouseListener();
     private VisibleAreaListener visibleAreaListener = new GTMVisibleAreaListener();
 
