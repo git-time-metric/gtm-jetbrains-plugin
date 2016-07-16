@@ -2,10 +2,10 @@
   <id>io.edgeg.gtm.intellij</id>
   <name>Git Time Metric</name>
   <version>1.0.0</version>
-  <vendor email="gtm@edgeg.io" url="https://github.com/git-time-metric/gtm-intellij-plugin">Git Time Metric</vendor>
+  <vendor email="gtm@edgeg.io" url="https://github.com/git-time-metric/gtm-jetbrains-plugin">Git Time Metric</vendor>
 
   <description><![CDATA[
-<img src="https://raw.githubusercontent.com/git-time-metric/gtm-atom-plugin/master/lib/GTMLogo-128.png" alt="Smiley face" height="100" width="100">
+<img src="https://raw.githubusercontent.com/git-time-metric/gtm-atom-plugin/master/lib/GTMLogo-128.png" alt="" height="100" width="100">
 <b>Simple, seamless, lightweight time tracking for all your git projects</b></br></br>
 <b>Git Time Metrics (GTM)</b> is a tool to automatically track time spent reading and working on code that you store in a Git repository.</br>
 By installing GTM and using supported plug-ins for your favorite editors, you can immediately realize better insight into how you are spending your time and on what files.</br></br>
