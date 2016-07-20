@@ -1,3 +1,5 @@
+**NOTE - this is currently under development and not quite ready yet for daily usage.  Stay tuned!**
+
 ![GTM Logo](https://raw.githubusercontent.com/git-time-metric/gtm-atom-plugin/master/lib/GTMLogo-128.png)
 # JetBrains Git Time Metrics (GTM) plug-in
 #### IntelliJ IDEA, PyCharm, WebStorm, AppCode, RubyMine, PhpStorm, AndroidStudio Plug-ins 
