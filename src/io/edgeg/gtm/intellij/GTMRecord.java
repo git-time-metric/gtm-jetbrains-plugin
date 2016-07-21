@@ -88,9 +88,29 @@ class GTMRecord {
     }
 
     public static Boolean initGtmExePath() {
-        String gtmExeName = System.getProperty("os.name").startsWith("Windows") ? "gtm.exe" : "gtm";
-        String result = null;
+        String gtmExeName;
+        String[] gtmPath;
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            gtmExeName = "gtm.exe";
+            gtmPath = new String[]{
+                Paths.get(System.getenv("ProgramFiles"), "gtm", "bin").toString(),
+                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm", "bin").toString(),
+                Paths.get(System.getenv("GOPATH"), "bin").toString()};
+        } else {
+            gtmExeName = "gtm";
+            gtmPath = new String[]{
+                "/usr/bin","/bin", "/usr/sbin","/sbin","/usr/local/bin/",
+                Paths.get(System.getenv("GOPATH"), "bin").toString()};
+        }
+
         String pathVar = System.getenv("PATH");
+        for (int i = 0; i < gtmPath.length; i++) {
+            if (!pathVar.contains(gtmPath[i])) {
+                pathVar += File.pathSeparator + gtmPath[i];
+            }
+        }
+
+        String result = null;
         String[] pathDirs = pathVar.split(File.pathSeparator);
         for (String pathDir : pathDirs) {
             Path toExe = Paths.get(pathDir, gtmExeName);
