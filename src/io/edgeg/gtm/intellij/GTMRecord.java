@@ -93,8 +93,8 @@ class GTMRecord {
         if (System.getProperty("os.name").startsWith("Windows")) {
             gtmExeName = "gtm.exe";
             gtmPath = new String[]{
-                Paths.get(System.getenv("ProgramFiles"), "gtm", "bin").toString(),
-                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm", "bin").toString()};
+                Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
+                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString()};
         } else {
             gtmExeName = "gtm";
             gtmPath = new String[]{"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/"};

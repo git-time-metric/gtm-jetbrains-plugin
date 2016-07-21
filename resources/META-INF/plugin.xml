@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>io.edgeg.gtm.intellij</id>
   <name>Git Time Metric</name>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <vendor email="gtm@edgeg.io" url="https://github.com/git-time-metric/gtm-jetbrains-plugin">Git Time Metric</vendor>
 
   <description><![CDATA[
@@ -34,6 +34,12 @@ Consult the <a href=https://github.com/git-time-metric/gtm/blob/master/README.md
     ]]></description>
 
   <change-notes><![CDATA[
+1.0.2 - 7/21/2016<br />
+------------------------<br />
+<br />
+- Fix path for finding gtm executable on Windows<br />
+<br />
+<br />
     ]]>
   </change-notes>
 
