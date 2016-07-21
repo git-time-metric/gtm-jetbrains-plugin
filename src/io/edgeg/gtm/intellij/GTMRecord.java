@@ -94,13 +94,10 @@ class GTMRecord {
             gtmExeName = "gtm.exe";
             gtmPath = new String[]{
                 Paths.get(System.getenv("ProgramFiles"), "gtm", "bin").toString(),
-                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm", "bin").toString(),
-                Paths.get(System.getenv("GOPATH"), "bin").toString()};
+                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm", "bin").toString()};
         } else {
             gtmExeName = "gtm";
-            gtmPath = new String[]{
-                "/usr/bin","/bin", "/usr/sbin","/sbin","/usr/local/bin/",
-                Paths.get(System.getenv("GOPATH"), "bin").toString()};
+            gtmPath = new String[]{"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/"};
         }
 
         String pathVar = System.getenv("PATH");
