@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 class GTMRecord {
-    private static final String GTM_VER_REQ = ">= 1.0-beta.6";
+    private static final String GTM_VER_REQ = ">= 1.0-beta.7";
 
     private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
     private static final String RECORD_COMMAND = "record";
