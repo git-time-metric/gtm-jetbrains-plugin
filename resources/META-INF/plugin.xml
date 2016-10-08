@@ -34,6 +34,12 @@ Consult the <a href=https://github.com/git-time-metric/gtm/blob/master/README.md
     ]]></description>
 
   <change-notes><![CDATA[
+1.0.5 - 10/8/2016<br />
+Require GTM v1.1.0<br />
+
+GTM now supports Terminal tracking!.
+
+-----------------------<br />
 1.0.4 - 8/8/2016<br />
 -----------------------<br />
 Require GTM v1.0.0<br />
