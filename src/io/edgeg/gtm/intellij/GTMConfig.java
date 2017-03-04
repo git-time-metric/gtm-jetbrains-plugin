@@ -16,24 +16,24 @@ import org.jetbrains.annotations.Nullable;
 )
 
 public class GTMConfig implements PersistentStateComponent<GTMConfig> {
-    public static Logger LOG = Logger.getInstance("#io.edgeg.gtm.intellij");
+    static Logger LOG = Logger.getInstance("#io.edgeg.gtm.intellij");
     private static GTMConfig CFG = null;
 
-    public Boolean statusEnabled = true;
+    Boolean statusEnabled = true;
 
-    public String gtmNotFound =
+    String gtmNotFound =
             "<B>Git Time Metric (GTM) executable not found.</B>\n" +
             "Install GTM and/or update your system path.\n" +
             "Make sure to restart after installing GTM.\n\n" +
             "See https://github.com/git-time-metric/gtm";
 
-    public String gtmVerOutdated =
+    String gtmVerOutdated =
             "<B>Git Time Metric (GTM) executable is out of date.</B>\n" +
             "The plug-in may not work properly.\n" +
             "Please install the latest GTM version and restart.\n\n" +
             "See https://github.com/git-time-metric/gtm";
 
-    public static GTMConfig getInstance() {
+    static GTMConfig getInstance() {
         if (CFG == null) {
             CFG = new GTMConfig();
         }
