@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
@@ -25,12 +24,12 @@ class GTMRecord {
     private static String lastRecordPath = null;
     private static Long lastRecordTime = null;
 
-    public static Boolean gtmExeFound = true;
-    public static Boolean gtmVersionOK = true;
+    static Boolean gtmExeFound = false;
+    static Boolean gtmVersionOK = true;
     private static GTMConfig cfg = new GTMConfig();
 
     static void record(String path, Project project) {
-        String status = "";
+        String status;
         if (StringUtils.isBlank(path)) return;
         if (!gtmExeFound) {
             status = "Error!";
@@ -54,8 +53,8 @@ class GTMRecord {
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, STATUS_OPTION, path).start();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     StringBuilder builder = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
+                    String line;
+                    while (null != (line = reader.readLine())) {
                         builder.append(line);
                     }
                     status = builder.toString();
@@ -82,36 +81,42 @@ class GTMRecord {
         if (project != null) {
             StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
             GTMStatusWidget widget = (GTMStatusWidget) statusBar.getWidget(GTMStatusWidget.class.getName());
-            widget.setText(status);
-            widget.updateStatusBar();
+            if (widget != null) {
+                widget.setText(status);
+                widget.updateStatusBar();
+            }
         }
     }
 
-    public static Boolean initGtmExePath() {
-        String gtmExeName;
+    static Boolean initGtmExePath() {
+        String gtmExeName = System.getProperty("os.name").startsWith("Windows") ? "gtm.exe" : "gtm";
         String[] gtmPath;
+        StringBuilder pathVar = new StringBuilder(System.getenv("PATH"));
+
         if (System.getProperty("os.name").startsWith("Windows")) {
-            gtmExeName = "gtm.exe";
+            // Setup an additional Windows user path
+            String userWinBin = System.getProperty("user.home") + File.separator + "gtm";
             gtmPath = new String[]{
-                Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
-                Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString()};
+                    Paths.get(System.getenv("ProgramFiles"), "gtm").toString(),
+                    Paths.get(System.getenv("ProgramFiles(x86)"), "gtm").toString(),
+                    userWinBin};
         } else {
-            gtmExeName = "gtm";
-            gtmPath = new String[]{"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/"};
+            // Setup additional common *nix user paths
+            String userBin = System.getProperty("user.home") + File.separator + "bin";
+            String userLocalBin = System.getProperty("user.home") + File.separator + "local" + File.separator + "bin";
+            gtmPath = new String[]{"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin/", userBin, userLocalBin};
         }
 
-        String pathVar = System.getenv("PATH");
-        for (int i = 0; i < gtmPath.length; i++) {
-            if (!pathVar.contains(gtmPath[i])) {
-                pathVar += File.pathSeparator + gtmPath[i];
+        for (String aGtmPath : gtmPath) {
+            if (!pathVar.toString().contains(aGtmPath)) {
+                pathVar.append(File.pathSeparator).append(aGtmPath);
             }
         }
 
         String result = null;
-        String[] pathDirs = pathVar.split(File.pathSeparator);
+        String[] pathDirs = pathVar.toString().split(File.pathSeparator);
         for (String pathDir : pathDirs) {
-            Path toExe = Paths.get(pathDir, gtmExeName);
-            File exeFile = toExe.toFile();
+            File exeFile = Paths.get(pathDir).resolve(gtmExeName).toFile();
             if (exeFile.getAbsoluteFile().exists() && exeFile.getAbsoluteFile().canExecute()) {
                 result = exeFile.getAbsolutePath();
                 break;
@@ -125,12 +130,12 @@ class GTMRecord {
         return gtmExeFound;
     }
 
-    public static Boolean checkVersion() {
+    static Boolean checkVersion() {
         try {
             Process process = new ProcessBuilder(gtmExePath, VERIFY_COMMAND, GTM_VER_REQ).start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder builder = new StringBuilder();
-            String line = null;
+            String line;
             while ( (line = reader.readLine()) != null) {
                 builder.append(line);
             }
