@@ -20,26 +20,34 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidget.Multiframe, StatusBarWidget.TextPresentation {
-    private static final String id = GTMStatusWidget.class.getName();
+    public static final String id = GTMStatusWidget.class.getName();
     private final AtomicBoolean opened = new AtomicBoolean();
     private String myText = "";
 
     private GTMStatusWidget(@NotNull Project project) {
         super(project);
 
-        myConnection.subscribe(UISettingsListener.TOPIC, uiSettings -> runUpdateLater());
+        myConnection.subscribe(UISettingsListener.TOPIC, new UISettingsListener() {
+            @Override
+            public void uiSettingsChanged(UISettings uiSettings) {
+                runUpdateLater();
+            }
+        });
 
     }
 
     private void runUpdateLater() {
-        UIUtil.invokeLaterIfNeeded(() -> {
-            if (opened.get()) {
-                runUpdate();
+        UIUtil.invokeLaterIfNeeded(new Runnable() {
+            @Override
+            public void run() {
+                if (opened.get()) {
+                    runUpdate();
+                }
             }
         });
     }
 
-    static GTMStatusWidget create(@NotNull Project project) {
+    public static GTMStatusWidget create(@NotNull Project project) {
         return new GTMStatusWidget(project);
     }
 
@@ -72,7 +80,7 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
         return "";
     }
 
-    void setText(String txt) {
+    public void setText(String txt) {
         if (txt == null) { return; }
         if (Objects.equals(txt,"")) { myText = "GTM"; return; }
         myText = txt.replaceAll("\\s*\\d*s\\s*$", "");
@@ -107,10 +115,14 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
         runUpdate();
     }
 
-    void updateStatusBar() {
+    public void updateStatusBar() {
         if (myStatusBar != null) {
             myStatusBar.updateWidget(ID());
         }
+    }
+
+    private void empty() {
+        myText = "";
     }
 
     private void runUpdate() {
@@ -120,14 +132,19 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
     @Nullable
     @Override
     public Consumer<MouseEvent> getClickConsumer() {
-        return mouseEvent -> runUpdate();
+        return new Consumer<MouseEvent>() {
+            @Override
+            public void consume(MouseEvent mouseEvent) {
+                runUpdate();
+            }
+        };
     }
 
-    void installed() {
+    public void installed() {
         opened.compareAndSet(false, true);
     }
 
-    void uninstalled() {
+    public void uninstalled() {
         opened.compareAndSet(true, false);
     }
 }
