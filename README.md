@@ -10,13 +10,7 @@ Git Time Metrics (GTM) is a tool to automatically track time spent reading and w
 
 Installing GTM is a two step process.  First, it's recommended you install the GTM executable that the plug-in integrates with and then install the JetBrains GTM plug-in.  Please submit an issue if you have any problems and/or questions.
 
-1. Follow the [Getting Started](https://github.com/git-time-metric/gtm/blob/master/README.md) section to install the GTM executable for your operating system. This plug-in looks for the gtm executable in the following locations:
-    <dl>
-        <dt>Windows Search Path</dt>
-        <dd><pre>%PATH%;\ProgramFiles\gtm;\ProgramFiles(x86)\gtm;&lt;homedir>\gtm</pre></dd>
-        <dt>*nix Search Path (includes macOS)</dt>
-        <dd><pre>$PATH:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:~/bin:~/local/bin</pre></dd>
-    </dl>
+1. Follow the [Getting Started](https://github.com/git-time-metric/gtm/blob/master/README.md) section to install the GTM executable for your operating system.
 2. Install the plug-in from your JetBrains IDE, select `Preferences` -> `Plugins` -> `Browse Repositories...` and search for `Git Time Metric`.
 
 **Note** - to enable time tracking for a Git repository, you need to initialize it with `gtm init` otherwise it will be ignored by GTM. This is done via the command line. You can run this within the JetBrains IDE terminal.
