@@ -14,9 +14,9 @@ public class GTMBackgroundRunner extends Task.Backgroundable {
     private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
     private Project project;
     private Semaphore semaphore = new Semaphore(1);
-    private String QueuedPath = "";
-    private String LastPath = "";
-    private Boolean Running = false;
+    private String queuedPath = "";
+    private String lastPath = "";
+    private Boolean running = false;
     private Long lastRecordTime = null;
 
 
@@ -28,8 +28,8 @@ public class GTMBackgroundRunner extends Task.Backgroundable {
     public void run(@NotNull ProgressIndicator indicator) {
         do {
             Long startTime = System.currentTimeMillis();
-            String path = QueuedPath;
-            QueuedPath = "";
+            String path = queuedPath;
+            queuedPath = "";
             semaphore.release();
             GTMRecord.record(path, project);
             Long elapsedTime = System.currentTimeMillis() - startTime;
@@ -45,23 +45,23 @@ public class GTMBackgroundRunner extends Task.Backgroundable {
             } catch (InterruptedException e) {
                 GTMConfig.LOG.error(e);
             }
-        } while (!QueuedPath.isEmpty());
-        Running = false;
+        } while (!queuedPath.isEmpty());
+        running = false;
         semaphore.release();
     }
     void record(String path) {
         Long currentTime = System.currentTimeMillis();
-        if (Objects.equals(LastPath, path) && lastRecordTime != null && currentTime - lastRecordTime <= RECORD_MIN_THRESHOLD) {
+        if (Objects.equals(lastPath, path) && lastRecordTime != null && currentTime - lastRecordTime <= RECORD_MIN_THRESHOLD) {
             return;
         }
         lastRecordTime = currentTime;
 
         try {
             semaphore.acquire();
-            QueuedPath = path;
-            LastPath = path;
-            if (!Running) {
-                Running = true;
+            queuedPath = path;
+            lastPath = path;
+            if (!running) {
+                running = true;
                 ProgressManager.getInstance().run(this);
             } else {
                 semaphore.release();
