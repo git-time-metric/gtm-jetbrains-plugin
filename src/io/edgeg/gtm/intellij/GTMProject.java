@@ -14,6 +14,7 @@ import static com.intellij.openapi.ui.MessageType.WARNING;
 
 public class GTMProject extends AbstractProjectComponent {
     private GTMStatusWidget myStatusWidget;
+    private GTMBackgroundRunner myBackgroundRunner;
 
     public GTMProject(@NotNull Project project) {
         super(project);
@@ -22,6 +23,11 @@ public class GTMProject extends AbstractProjectComponent {
     @Override
     public void initComponent() {
         myStatusWidget = GTMStatusWidget.create(myProject);
+        myBackgroundRunner = new GTMBackgroundRunner(myProject);
+    }
+
+    GTMBackgroundRunner getGTMBackgroundRunner() {
+        return myBackgroundRunner;
     }
 
     @Override

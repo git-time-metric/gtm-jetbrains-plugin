@@ -3,6 +3,7 @@ package io.edgeg.gtm.intellij;
 import com.intellij.openapi.editor.event.EditorMouseEvent;
 import com.intellij.openapi.editor.event.EditorMouseListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 class GTMEditorMouseListener implements EditorMouseListener {
@@ -12,7 +13,10 @@ class GTMEditorMouseListener implements EditorMouseListener {
         final FileDocumentManager instance = FileDocumentManager.getInstance();
         final VirtualFile file = instance.getFile(editorMouseEvent.getEditor().getDocument());
         if (file != null) {
-            GTMRecord.record(file.getPath(), editorMouseEvent.getEditor().getProject());
+            Project proj = editorMouseEvent.getEditor().getProject();
+            if (proj != null) {
+                proj.getComponent(GTMProject.class).getGTMBackgroundRunner().record(file.getPath());
+            }
         }
     }
 

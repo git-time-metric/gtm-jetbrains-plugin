@@ -14,15 +14,10 @@ import java.util.Objects;
 
 class GTMRecord {
     private static final String GTM_VER_REQ = ">= 1.2.5";
-
-    private static final Long RECORD_MIN_THRESHOLD = 30000L; // 30 seconds
     private static final String RECORD_COMMAND = "record";
     private static final String STATUS_OPTION = "--status";
     private static final String VERIFY_COMMAND = "verify";
-
     private static String gtmExePath = null;
-    private static String lastRecordPath = null;
-    private static Long lastRecordTime = null;
 
     static Boolean gtmExeFound = false;
     static Boolean gtmVersionOK = true;
@@ -35,14 +30,6 @@ class GTMRecord {
             status = "Error!";
         } else {
             try {
-                Long currentTime = System.currentTimeMillis();
-                if (Objects.equals(lastRecordPath, path)) {
-                    if (lastRecordTime != null && currentTime - lastRecordTime <= RECORD_MIN_THRESHOLD) {
-                        return;
-                    }
-                }
-                lastRecordPath = path;
-                lastRecordTime = currentTime;
                 if (cfg.statusEnabled) {
 
 //                    GTMConfig.LOG.info(
