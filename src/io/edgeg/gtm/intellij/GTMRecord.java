@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RunnableFuture;
 
 class GTMRecord {
     private static final String GTM_VER_REQ = ">= 1.2.5";
@@ -28,7 +32,29 @@ class GTMRecord {
     static Boolean gtmVersionOK = true;
     private static GTMConfig cfg = new GTMConfig();
 
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static Future recordTask;
+
     static void record(String path, Project project) {
+        Runnable r = new Runnable() {
+            public void run() {
+                GTMRecord.runRecord(path, project);
+            }
+        };
+//        GTMConfig.LOG.info(String.format( "Submit record %s %s", path, project));
+        GTMRecord.sumbitRecord(r);
+    }
+
+    private static synchronized void sumbitRecord(Runnable r) {
+        if (recordTask != null && !recordTask.isDone()) {
+            return;
+        }
+        recordTask = GTMRecord.executor.submit(r);
+    }
+
+    private static synchronized void runRecord(String path, Project project) {
+//        GTMConfig.LOG.info(String.format( "Running record %s %s", path, project));
+
         String status;
         if (StringUtils.isBlank(path)) return;
         if (!gtmExeFound) {
