@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.RunnableFuture;
 
 class GTMRecord {
     private static final String GTM_VER_REQ = ">= 1.2.5";
@@ -34,26 +33,41 @@ class GTMRecord {
 
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
     private static Future recordTask;
+    private static Long lastRunTime = null;
+    private static final Long MAX_RUN_TIME = 2L; // 2 seconds
 
     static void record(String path, Project project) {
         Runnable r = new Runnable() {
             public void run() {
-                GTMRecord.runRecord(path, project);
+                runRecord(path, project);
             }
         };
-//        GTMConfig.LOG.info(String.format( "Submit record %s %s", path, project));
-        GTMRecord.sumbitRecord(r);
+//        GTMConfig.LOG.info(String.format( "Submit record %s", path));
+        submitRecord(r);
     }
 
-    private static synchronized void sumbitRecord(Runnable r) {
+    private static synchronized void submitRecord(Runnable r) {
+
+        // is there a task running
         if (recordTask != null && !recordTask.isDone()) {
+            // make sure it's not a hung process
+            if (lastRunTime != null && System.currentTimeMillis() - lastRunTime > MAX_RUN_TIME) {
+                // process is hung, cancel it
+                recordTask.cancel(true);
+                GTMConfig.LOG.warn("Record task was hung, task cancelled");
+                recordTask = executor.submit(r);
+            }
             return;
         }
-        recordTask = GTMRecord.executor.submit(r);
+
+        // only submit a task if there isn't one running already
+        if (recordTask == null || recordTask.isDone()) {
+            recordTask = executor.submit(r);
+        }
     }
 
     private static synchronized void runRecord(String path, Project project) {
-//        GTMConfig.LOG.info(String.format( "Running record %s %s", path, project));
+//        GTMConfig.LOG.info(String.format("Run record %s", path));
 
         String status;
         if (StringUtils.isBlank(path)) return;
@@ -94,6 +108,7 @@ class GTMRecord {
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, path).start();
                     status = "";
                 }
+                lastRunTime = System.currentTimeMillis();
 
             } catch (IOException e) {
                 status = "Error!";
