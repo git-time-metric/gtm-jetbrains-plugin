@@ -66,7 +66,7 @@ class GTMRecord {
         }
     }
 
-    private static synchronized void runRecord(String path, Project project) {
+    private static void runRecord(String path, Project project) {
 //        GTMConfig.LOG.info(String.format("Run record %s", path));
 
         String status;
