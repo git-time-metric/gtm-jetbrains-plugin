@@ -34,7 +34,7 @@ class GTMRecord {
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
     private static Future recordTask;
     private static Long lastRunTime = null;
-    private static final Long MAX_RUN_TIME = 2L; // 2 seconds
+    private static final Long MAX_RUN_TIME = 2000L; // 2 seconds
 
     static void record(String path, Project project) {
         Runnable r = new Runnable() {
@@ -91,6 +91,7 @@ class GTMRecord {
 //                                    gtmExePath, RECORD_COMMAND, STATUS_OPTION, path));
 
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, STATUS_OPTION, path).start();
+                    lastRunTime = System.currentTimeMillis();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     StringBuilder builder = new StringBuilder();
                     String line;
@@ -106,10 +107,9 @@ class GTMRecord {
 //                                    gtmExePath, RECORD_COMMAND, path));
 
                     Process process = new ProcessBuilder(gtmExePath, RECORD_COMMAND, path).start();
+                    lastRunTime = System.currentTimeMillis();
                     status = "";
                 }
-                lastRunTime = System.currentTimeMillis();
-
             } catch (IOException e) {
                 status = "Error!";
                 if (initGtmExePath()) {
