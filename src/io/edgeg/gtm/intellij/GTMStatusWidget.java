@@ -6,6 +6,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
 import com.intellij.util.Consumer;
@@ -26,9 +27,6 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
 
     private GTMStatusWidget(@NotNull Project project) {
         super(project);
-
-        myConnection.subscribe(UISettingsListener.TOPIC, uiSettings -> runUpdateLater());
-
     }
 
     private void runUpdateLater() {
@@ -121,6 +119,12 @@ public class GTMStatusWidget extends EditorBasedWidget implements StatusBarWidge
     @Override
     public Consumer<MouseEvent> getClickConsumer() {
         return mouseEvent -> runUpdate();
+    }
+
+    @Override
+    public void install(@NotNull StatusBar statusBar) {
+        super.install(statusBar);
+        myConnection.subscribe(UISettingsListener.TOPIC, uiSettings -> runUpdateLater());
     }
 
     void installed() {
